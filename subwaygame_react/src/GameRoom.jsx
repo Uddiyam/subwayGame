@@ -52,9 +52,9 @@ export default function GameRoom() {
       });
     } else if (waitTF && newid) {
       if (wait_id) wait_id = newid.id;
-      wait_id && socket.emit("waitId", wait_id);
+      await (wait_id && socket.emit("waitId", wait_id));
 
-      navigate("/Result", {
+      await navigate("/Result", {
         state: {
           newId: newid,
 
@@ -65,28 +65,26 @@ export default function GameRoom() {
       });
     }
   });
-
+  let score_copy = [...score];
   socket.on("timeOverAnswer", async (data) => {
-    count == 3 ? setCount(1) : setCount(data.uid + 1);
-    time.current = 10;
-
-    let score_copy = [...score];
     if (data.uid == 1) {
       score_copy[1] += 1;
       score_copy[2] += 1;
-      setScore(score_copy);
+      await setScore(score_copy);
       await socket.emit("score", score_copy, sockets);
     } else if (data.uid == 2) {
       score_copy[0] += 1;
       score_copy[2] += 1;
-      setScore(score_copy);
+      await setScore(score_copy);
       await socket.emit("score", score_copy, sockets);
     } else if (data.uid == 3) {
       score_copy[0] += 1;
       score_copy[1] += 1;
-      setScore(score_copy);
+      await setScore(score_copy);
       await socket.emit("score", score_copy, sockets);
     }
+    await (count == 3 ? setCount(1) : setCount(data.uid + 1));
+    time.current = 10;
   });
 
   wait_id &&
@@ -98,22 +96,29 @@ export default function GameRoom() {
   const timerId = useRef(null);
 
   useEffect(() => {
-    timerId.current = setInterval(() => {
-      setSec(time.current % 60);
+    if (time.current == 10) {
+      if (time.current >= 0) {
+        timerId.current = setInterval(() => {
+          setSec(time.current % 60);
 
-      time.current -= 1;
-    }, 1000);
-    return () => clearInterval(timerId.current);
+          time.current -= 1;
+        }, 1000);
+        return () => clearInterval(timerId.current);
+      }
+    }
   }, []);
   let TF;
 
   useEffect(() => {
     if (time.current < 0) {
-      TF = true;
+      async function Time() {
+        TF = true;
 
-      socket.emit("timeOver", count, socketId);
+        await socket.emit("timeOver", count, socketId);
 
-      setAnswer([]);
+        setAnswer([]);
+      }
+      Time();
     }
   }, [sec]);
 
@@ -173,16 +178,16 @@ export default function GameRoom() {
                     variant="primary"
                     size="lg"
                     className={styles.Btn}
-                    onClick={() => {
+                    onClick={async () => {
                       answer.length > 0 &&
-                        socket.emit(
+                        (await socket.emit(
                           "chat",
                           socketId,
                           answer,
                           data.includes(answer),
                           userAnswer.includes(answer),
                           count
-                        );
+                        ));
                       setAnswer([]);
 
                       console.log(id, count);
