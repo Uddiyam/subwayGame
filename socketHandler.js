@@ -17,13 +17,10 @@ const socketHandler = (server) => {
     const req = socket.request;
     const socket_id = socket.id;
     //const client_ip =
-    req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+    // req.headers["x-forwarded-for"] || req.connection.remoteAddress;
     //console.log("socket ID : ", socket_id);
     //console.log("client IP : ", client_ip);
     socket.on("disconnect", async () => {
-      //  console.log(socket.id, "client disconnected");
-      //console.log(user);
-
       await io.emit("endGame", user[socket.id], waitTF, user);
       await socket.emit("waitGame");
     });
@@ -59,7 +56,7 @@ const socketHandler = (server) => {
       }
 
       if (count > 3) {
-        console.log(count);
+        console.log("sssssss" + count);
 
         user[socket.id].wait += 1;
         await socket.emit("wait", user[socket.id]);
@@ -181,8 +178,9 @@ const socketHandler = (server) => {
 
       await io.emit("pointResult", point, name_);
     });
-    socket.on("change", (data, uid) => {
+    socket.on("change", async (data, uid) => {
       if (user[data]) user[data].id = uid;
+      await socket.emit("changeRe", user[data]);
     });
   });
 };

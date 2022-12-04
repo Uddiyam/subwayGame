@@ -41,11 +41,9 @@ export default function Result() {
     setRe(true);
     newid && setNew(newid.id);
   });
-  socket.on("msg2", (user) => {
-    console.log(user);
-
-    socket.on("startGame2", (names, sockets) => {
-      navigate("/GameRoom", {
+  socket.on("msg2", async (user) => {
+    await socket.on("startGame2", async (names, sockets) => {
+      await navigate("/GameRoom", {
         state: {
           userName: user.nickname,
           id: user.id,

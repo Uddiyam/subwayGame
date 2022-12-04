@@ -11,22 +11,37 @@ export default function WaitingRoom() {
   const [userName, setUserName] = useState("");
   const [click, setClick] = useState(false);
   const [wait, setWait] = useState([]);
+  const [waitSocket, setWaitSocket] = useState();
   let newId = localStorage.getItem("newId");
   const [user2, setUser] = useState();
-  let id;
+  const [change, setChange] = useState(false);
+  const [socketId, setSocketId] = useState();
 
   const socket = io.connect("http://23.21.129.130:8080/");
   socket.on("connect", () => {
     socket.emit("event1", "hi");
   });
+  socket.on("endGame", async (newid, waitTF, user) => {
+    console.log(waitSocket);
+    newid && localStorage.setItem("newId", newid.id);
+    waitSocket &&
+      (await socket.emit(
+        "change",
+        waitSocket,
+        localStorage.getItem("newId", newid.id)
+      ));
+    socket.on("changeRe", async (data) => {
+      console.log(data);
+      await setChange(true);
+    });
+  });
 
-  socket.on("msg", (user) => {
-    console.log(user2);
-    console.log(user);
+  socket.on("msg", async (user) => {
     setWait(user.wait);
+    setSocketId(user.socket_id);
     //setId(count);
-    socket.on("startGame", (names, sockets) => {
-      navigate("/GameRoom", {
+    await socket.on("startGame", async (names, sockets) => {
+      await navigate("/GameRoom", {
         state: {
           userName: user.nickname,
           id: user2 ? user2.id : user.id,
@@ -38,9 +53,24 @@ export default function WaitingRoom() {
     });
   });
 
-  socket.on("wait", (data) => {
+  socket.on("wait", async (data) => {
     console.log(data);
-    setWait(data);
+    await setWait(data);
+    await setWaitSocket(data.socket_id);
+  });
+
+  socket.on("msg2", async (user) => {
+    await socket.on("startGame2", async (names, sockets) => {
+      await navigate("/GameRoom", {
+        state: {
+          userName: user.nickname,
+          id: user.id,
+          allusers: names,
+          socketId: user.socket_id,
+          sockets: sockets,
+        },
+      });
+    });
   });
 
   return (
@@ -72,8 +102,8 @@ export default function WaitingRoom() {
                   variant="primary"
                   size="lg"
                   className={styles.Btn}
-                  onClick={() => {
-                    socket.emit("join_room", userName);
+                  onClick={async () => {
+                    await socket.emit("join_room", userName);
                     setClick(true);
                   }}
                 >
@@ -81,7 +111,7 @@ export default function WaitingRoom() {
                 </Button>
               )}
             </div>
-            {console.log(wait, user2)}
+
             <div className={styles.Msg}>
               {(userName.length == 0 || click == false) && (
                 <span style={{ color: "red" }}>
@@ -109,9 +139,9 @@ export default function WaitingRoom() {
                           "see",
                           user2 && user2.id != "undefined" ? user2 : wait
                         );
-                        socket.on("seeGame", (data, names, sockets) => {
-                          console.log(data.nickname, data.id, names);
-                          navigate("/GameRoom", {
+                        socket.on("seeGame", async (data, names, sockets) => {
+                          await setWaitSocket(data.socket_id);
+                          await navigate("/GameRoom", {
                             state: {
                               userName: data.nickname,
                               wait_id: data.id,
@@ -125,6 +155,25 @@ export default function WaitingRoom() {
                       관전하기
                     </Button>
                   </div>
+                  {change && (
+                    <div className={styles.SeeBtn}>
+                      <Button
+                        variant="primary"
+                        size="lg"
+                        className={styles.Btn}
+                        onClick={async () => {
+                          setClick(true);
+
+                          await socket.emit(
+                            "restart1",
+                            waitSocket ? waitSocket : socketId
+                          );
+                        }}
+                      >
+                        게임시작
+                      </Button>
+                    </div>
+                  )}
                 </>
               )}
             </div>
