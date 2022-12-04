@@ -41,9 +41,10 @@ export default function WaitingRoom() {
   socket.on("wait", (data) => {
     console.log(data);
     setWait(data);
-    console.log(newId.length);
-    newId.length != 4 && socket.emit("newUser", newId);
-    newId.length != 4 &&
+
+    newId && newId != null && socket.emit("newUser", newId);
+    newId &&
+      newId.length != null &&
       socket.on("new2", async (data) => {
         console.log(data);
         await setUser(data);
