@@ -40,10 +40,9 @@ const socketHandler = (server) => {
       //console.log(user[socket.id]);
       // console.log(count);
       restart_count > 0 ? (count = restart_count + 1) : (count = count);
-
+      id += 1;
+      count += 1;
       if (count <= 3) {
-        id += 1;
-        count += 1;
         names.push(userName);
 
         aa.push(userName);
@@ -56,7 +55,6 @@ const socketHandler = (server) => {
           await io.emit("startGame", names, socketIds);
           names = [];
           socketIds = [];
-          count += 1;
         }
         waitTF = false;
       }
