@@ -21,7 +21,7 @@ export default function Result() {
   const [new_, setNew] = useState("");
   const [count, setCount] = useState(0);
 
-  const socket = io.connect("http://23.21.129.130:8080/");
+  const socket = io.connect("http://localhost:8080/");
 
   useEffect(() => {
     socket.emit("point", all);
