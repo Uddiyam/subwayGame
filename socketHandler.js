@@ -96,7 +96,7 @@ const socketHandler = (server) => {
     socket.on("chat", async (socketId, answer, tf_data, tf_user, count) => {
       //console.log(user[socketId], answer);
       if (tf_data == true && tf_user == false) {
-        await answerList.push(answer);
+        answerList.push(answer);
         await io.emit("answer", {
           userName: user[socketId].nickname,
           answer: answer,
@@ -113,7 +113,6 @@ const socketHandler = (server) => {
       }
     });
 
-    let new_name = [];
     socket.on("timeOver", (count, socketId) => {
       //console.log(user[socketId], user[socket] && user[socketId].id == count);
       //let loser = user[socketId].id == count && user[socketId];
@@ -145,12 +144,6 @@ const socketHandler = (server) => {
       }
     });
 
-    /*
-    socket.on("newNames", (data) => {
-      new_name.push(data);
-      console.log(new_name);
-    });*/
-
     socket.on("restart1", async (data) => {
       console.log(restart_count, data);
       socket.emit("msg2", user[data]);
@@ -178,31 +171,7 @@ const socketHandler = (server) => {
 
       console.log(restart_count);
     });
-    /*
-    socket.on('restart1', (data)=>{
-      console.log(data)
-      if (restart_count <= 3) {
 
-        restart_count += 1;
-        names.push(user[data].nickname);
-
-        aa.push(userName);
-
-
-        // console.log(socketIds);
-        socket.emit("msg", user[socket.id]);
-        console.log("카운트?? : " + count, names, socketIds);
-        if (count == 3) {
-          io.emit("startGame", names, socketIds);
-          names = [];
-          socketIds = [];
-          count += 1;
-        }
-
-        console.log("카운트 : " + count);
-        waitTF = false;
-      }
-    })*/
     socket.on("deleteUser", async (data) => {
       let delete1 = data;
       delete user[delete1];

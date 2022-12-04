@@ -173,16 +173,16 @@ export default function GameRoom() {
                     variant="primary"
                     size="lg"
                     className={styles.Btn}
-                    onClick={async () => {
+                    onClick={() => {
                       answer.length > 0 &&
-                        (await socket.emit(
+                        socket.emit(
                           "chat",
                           socketId,
                           answer,
                           data.includes(answer),
                           userAnswer.includes(answer),
                           count
-                        ));
+                        );
                       setAnswer([]);
 
                       console.log(id, count);
