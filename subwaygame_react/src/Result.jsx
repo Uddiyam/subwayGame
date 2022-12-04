@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -23,13 +23,15 @@ export default function Result() {
 
   const socket = io.connect("http://23.21.129.130:8080/");
 
-  socket.emit("point", all);
-  socket.on("pointResult", (point, names) => {
-    setNames(names);
-    setPoint(point);
-    setMax(Math.max.apply(null, point));
-  });
-  console.log(wait_socket);
+  useEffect(() => {
+    socket.emit("point", all);
+    socket.on("pointResult", async (point, names) => {
+      await setNames(names);
+      await setPoint(point);
+      await setMax(Math.max.apply(null, point));
+    });
+  }, []);
+
   wait_socket &&
     socket.emit("change", wait_socket, localStorage.getItem("newId"));
 

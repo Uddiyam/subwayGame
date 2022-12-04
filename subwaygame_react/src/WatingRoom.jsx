@@ -41,14 +41,6 @@ export default function WaitingRoom() {
   socket.on("wait", (data) => {
     console.log(data);
     setWait(data);
-
-    newId && newId != null && socket.emit("newUser", newId);
-    newId &&
-      newId.length != null &&
-      socket.on("new2", async (data) => {
-        console.log(data);
-        await setUser(data);
-      });
   });
 
   return (

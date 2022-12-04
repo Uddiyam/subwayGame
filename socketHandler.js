@@ -22,7 +22,7 @@ const socketHandler = (server) => {
     //console.log("client IP : ", client_ip);
     socket.on("disconnect", async () => {
       //  console.log(socket.id, "client disconnected");
-      console.log(user);
+      //console.log(user);
 
       await io.emit("endGame", user[socket.id], waitTF, user);
       await socket.emit("waitGame");
@@ -37,8 +37,7 @@ const socketHandler = (server) => {
         wait: 0,
         socket_id: socket.id,
       };
-      //console.log(user[socket.id]);
-      // console.log(count);
+
       restart_count > 0 ? (count = restart_count + 1) : (count = count);
       id += 1;
       count += 1;
@@ -48,7 +47,7 @@ const socketHandler = (server) => {
         aa.push(userName);
 
         socketIds.push(socket.id);
-        // console.log(socketIds);
+
         await socket.emit("msg", user[socket.id]);
         console.log("카운트?? : " + count, names, socketIds);
         if (count == 3) {
@@ -60,10 +59,9 @@ const socketHandler = (server) => {
       }
 
       if (count > 3) {
-        // console.log(id);
+        console.log(count);
 
         user[socket.id].wait += 1;
-        //console.log(user[socket.id]);
         await socket.emit("wait", user[socket.id]);
         waitTF = true;
 
@@ -81,7 +79,6 @@ const socketHandler = (server) => {
     });
 
     socket.on("waitId", async (data) => {
-      //console.log(data);
       await socket.broadcast.emit("moveResult", true);
       await socket.emit("wait_", true);
     });
@@ -114,8 +111,6 @@ const socketHandler = (server) => {
     });
 
     socket.on("score", async (data, sockets) => {
-      //console.log(sockets[0], sockets[1], sockets[2]);
-
       if (sockets) {
         let q = await sockets.map((a, i) => {
           return (a[i] = data[i]);
@@ -137,25 +132,22 @@ const socketHandler = (server) => {
     socket.on("restart1", async (data) => {
       console.log(restart_count, data);
       await socket.emit("msg2", user[data]);
-
+      restart_count += 1;
       if (user[data]) {
         user[data].point = 0;
       }
       if (restart_count <= 3) {
-        console.log(user[data]);
         users_re.push(user[data]);
         names.push(user[data].nickname);
 
         console.log("새로운 : " + names);
         socketIds.push(socket.id);
-        restart_count += 1;
 
         if (restart_count == 3) {
           console.log(names, socketIds);
           await io.emit("startGame2", names, socketIds);
           names = [];
           socketIds = [];
-          restart_count += 1;
         }
       }
 
@@ -165,7 +157,6 @@ const socketHandler = (server) => {
     socket.on("deleteUser", async (data) => {
       let delete1 = data;
       delete user[delete1];
-      // await console.log(user);
     });
     let point = [];
     let name_ = [];
@@ -191,7 +182,7 @@ const socketHandler = (server) => {
       await io.emit("pointResult", point, name_);
     });
     socket.on("change", (data, uid) => {
-      user[data].id = uid;
+      if (user[data]) user[data].id = uid;
     });
   });
 };
