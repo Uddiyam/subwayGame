@@ -1,0 +1,81 @@
+.Container{
+    width: 100%;
+    height: 100%;
+}
+
+.FormWrap{
+    padding: 5%;
+}
+
+.InputWrap{
+    width: 100%;
+}
+
+.Input{
+    width: 50%;
+    margin: 0 auto;
+    margin-bottom: 3%;
+    height: 60px;
+}
+
+.BtnWrap{
+    width:100%;
+    text-align: center;
+    margin-bottom: 3%;
+}
+
+.Btn{
+    width: 30%;
+    font-size:large ;
+}
+
+.Msg{
+    text-align: center;
+}
+
+.AnswerUser{
+    margin-right: 2%;
+}
+
+.ChatWrap{
+    text-align: center;
+    margin-bottom: 2%;
+    font-size: 1.4em;
+    font-weight: bold;
+    line-height: 120%;
+}
+
+.ChatList{
+    font-size: 1.4em;
+}
+
+.ScoreList{
+    font-size: larger;
+    text-align: center;
+    padding: 2%;
+    border: 3px solid black;
+    border-radius: 20px;
+    width: 30%;
+}
+
+.Timer{
+    float: right;
+    font-weight: bolder;
+    font-size: 3em;
+    padding-right: 10%;
+    color: red;
+}
+
+.Now{
+    font-size: 1.5em;
+    font-weight: bold;
+    color: green;
+    margin-bottom: 2%;
+    text-align: center;
+}
+
+.Info{
+    color: red;
+    font-size: 1.2em;
+    margin-top: 1.5%;
+}
