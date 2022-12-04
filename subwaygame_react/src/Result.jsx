@@ -81,7 +81,6 @@ export default function Result() {
               setCount(count + 1);
 
               await socket.emit("restart1", wait_socket ? wait_socket : user);
-              console.log(user);
               setRe(false);
             }}
           >

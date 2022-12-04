@@ -16,13 +16,13 @@ export default function WaitingRoom() {
   const [user2, setUser] = useState();
   const [change, setChange] = useState(false);
   const [socketId, setSocketId] = useState();
+  const [changeTF, setChangeTF] = useState(false);
 
   const socket = io.connect("http://23.21.129.130:8080/");
   socket.on("connect", () => {
     socket.emit("event1", "hi");
   });
   socket.on("endGame", async (newid, waitTF, user) => {
-    console.log(waitSocket);
     newid && localStorage.setItem("newId", newid.id);
     waitSocket &&
       (await socket.emit(
@@ -155,25 +155,37 @@ export default function WaitingRoom() {
                       관전하기
                     </Button>
                   </div>
-                  {change && (
-                    <div className={styles.SeeBtn}>
-                      <Button
-                        variant="primary"
-                        size="lg"
-                        className={styles.Btn}
-                        onClick={async () => {
-                          setClick(true);
-
-                          await socket.emit(
-                            "restart1",
-                            waitSocket ? waitSocket : socketId
-                          );
-                        }}
-                      >
-                        게임시작
-                      </Button>
-                    </div>
-                  )}
+                  {change &&
+                    (changeTF == false ? (
+                      <div className={styles.SeeBtn}>
+                        <Button
+                          variant="primary"
+                          size="lg"
+                          className={styles.Btn}
+                          onClick={async () => {
+                            setClick(true);
+                            setChangeTF(true);
+                            await socket.emit(
+                              "restart1",
+                              waitSocket ? waitSocket : socketId
+                            );
+                          }}
+                        >
+                          게임시작
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className={styles.SeeBtn}>
+                        <Button
+                          variant="primary"
+                          size="lg"
+                          className={styles.Btn}
+                          disabled
+                        >
+                          게임시작
+                        </Button>
+                      </div>
+                    ))}
                 </>
               )}
             </div>
