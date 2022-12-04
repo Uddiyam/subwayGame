@@ -27,9 +27,9 @@ export default function GameRoom() {
   const socket = io.connect("http://23.21.129.130:8080/");
   const [score_wait, setScoreWait] = useState([]);
   newId && socket.emit("newUser", newId);
-  socket.on("answer", (data) => {
-    setAnswerUser([...answerUser, data.userName]);
-    setUserAnswer([...userAnswer, data.answer]);
+  socket.on("answer", async (data) => {
+    await setAnswerUser([...answerUser, data.userName]);
+    await setUserAnswer([...userAnswer, data.answer]);
 
     count == 3 ? setCount(1) : setCount(data.uid + 1);
 
