@@ -24,7 +24,7 @@ export default function GameRoom() {
   const [answerUser, setAnswerUser] = useState([]);
   const [isclicked, setIsClicked] = useState(false);
   const [score, setScore] = useState([0, 0, 0]);
-  const socket = io.connect("http://localhost:8080");
+  const socket = io.connect("http://http://23.21.129.130:8080/");
   const [score_wait, setScoreWait] = useState([]);
   newId && socket.emit("newUser", newId);
   socket.on("answer", (data) => {

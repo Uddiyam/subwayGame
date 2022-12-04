@@ -15,7 +15,7 @@ export default function WaitingRoom() {
   const [user2, setUser] = useState();
   let id;
 
-  const socket = io.connect("http://localhost:8080");
+  const socket = io.connect("http://23.21.129.130:8080/");
   socket.on("connect", () => {
     socket.emit("event1", "hi");
   });
